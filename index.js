@@ -1,18 +1,19 @@
 const serverless = require('serverless-http')
 const express = require("express")
 const multer = require("multer")
-const upload = multer({dest:'uploads'})
-
+const upload = multer({dest:'../../tmp'})
+const path = require('path')
 const fs = require('fs')
 const util = require('util')
 
 const unlinkFile = util.promisify(fs.unlink)
-
-const {uploadFile, getFileStream} = require('./s3')
-
+const {uploadFile} = require('./s3')
 const { createNewItem, getS3Key } = require('./dynoDB')
-
 const { urlShortener } = require("./urlShortener")
+const { json } = require('express/lib/response')
+const res = require('express/lib/response')
+const { getSignedUrl }  = require('./getSignedUrl')
+
 
 const app = express()
 
@@ -20,19 +21,37 @@ const app = express()
 app.listen(3000)
 
 // set ejs view engine
+const viewsPath = path.join(__dirname, '/views')
+app.set('views', viewsPath)
 app.set('view engine', 'ejs')
 
-app.use(express.static('public'))
+
+const publicPath = path.join(__dirname, '/public');
+app.use(express.static(publicPath))
+
+// for getting css url from S3 Bucket
+const createSignedUrlForCss = async ()=>{
+    return await getSignedUrl("style.css", "CSS")
+}
+
 // render index page
-app.get('/' ,(req, res)=>{
-    res.render("index")
+app.get('/' ,async (req, res)=>{
+    res.render("index",{cssFile: await createSignedUrlForCss()})
 })
 
+// For Health check
+app.get('/health',(req,res)=>{
+    res.json(JSON.stringify({
+        'health':'OK',
+        'statusCode':200
+    }))
+})
 
-//render image stored on AWS S3
-app.get('/images', async (req, res)=>{
+//render image stored on AWS S3 original size or resized image
+app.get('/showImage', async (req, res)=>{
     const key = req.params.key
 
+    // getting shortUrl, width and height from url
     const shorturl = req.query.shorturl;
     let width = parseInt(req.query.width);
     let height = parseInt(req.query.height);
@@ -47,11 +66,29 @@ app.get('/images', async (req, res)=>{
         width = height
     }
 
-    const s3key = await getS3Key(shorturl) // for get the key value of s3 object from short url
+    // for get the key value of s3 object from short url
+    const s3key = await getS3Key(shorturl) 
 
-    const readStream = getFileStream(s3key.Item.S3key.S, width, height ) // for get the image from s3
+    let signedUrl;
+    
+    // if width or height provided in url.
+    if(width || height){
+        const {resizeImage} = require('./s3')
 
-    readStream.pipe(res) // render image
+        // It get a signed url of original image to resize using url
+        const signedUrlForResize = await getSignedUrl(s3key.Item.S3key.S)
+
+        const resizeImageUrl = await resizeImage(signedUrlForResize,s3key.Item.S3key.S, width, height ) // for get the image from s3
+
+        // A signed url of resized image 
+        signedUrl = await getSignedUrl(resizeImageUrl.Key)
+    }else{
+        // a signed url of original image
+        signedUrl = await getSignedUrl(s3key.Item.S3key.S)
+    }
+
+    // render original or resized image
+    res.render('showImage',{shortUrl:signedUrl, cssFile: await createSignedUrlForCss()}) // render image
 })
 
 
@@ -74,7 +111,7 @@ app.post('/imagesURL',upload.single('userImage'), async (req, res)=>{
     const createdItem = await createNewItem(result.Key, getShortUrl)
     console.log("--------DONE WITH NEW ITEM--------");
 
-    res.render('shorturl_page',{shortUrl:createdItem.shortURL.S})
+    res.render('shorturl_page',{shortUrl:createdItem.shortURL.S, cssFile: await createSignedUrlForCss()})
 })
 
-module.exports.handler = serverless(app)
+exports.handler = serverless(app)

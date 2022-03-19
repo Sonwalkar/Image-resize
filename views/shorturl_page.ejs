@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="<%= cssFile %>">
     <title>Image Resize</title>
 </head>
 <body>
     <h1>IMAGE RESIZE</h1>
     <p>Your uploaded image's short url
-        <a href="/images?shorturl=<%= shortUrl %>">/images?shorturl=<%= shortUrl %></a>
+        <a href="/showImage?shorturl=<%= shortUrl %>">/showImage?shorturl=<%= shortUrl %></a>
     </p>
     <p class="note">To resize image add the width and height in url for eg. 
-        <a href="/images?shorturl=<%= shortUrl %>&width=400&height=300">/images?shorturl=<%= shortUrl %>&width=400&height=300"</a>
+        <a href="/showImage?shorturl=<%= shortUrl %>&width=400&height=300">/showImage?shorturl=<%= shortUrl %>&width=400&height=300"</a>
     </p>
+
 </body>
 </html>
