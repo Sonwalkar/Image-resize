@@ -9,4 +9,4 @@ AWS_BUCKET_NAME="image-test-nodejs-akshay"
 AWS_BUCKET_REGION="us-east-1"
 AWS_DYNAMODB_TABLE="imageResize"
 ```
-``` If you running locally then you have to add credentials `access key, secret key`.
+```Note: If you running locally then you have to add credentials `access key, secret key`.```
