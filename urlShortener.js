@@ -4,15 +4,9 @@ const nanoID = require('nanoid')
 
 const tableName = process.env.AWS_DYNAMODB_TABLE
 const region = process.env.AWS_BUCKET_REGION
-const accessKeyId = process.env.AWS_ACCESSKEY
-const secretAccessKey = process.env.AWS_SECRETKEY
-const sessionToken = process.env.AWS_SESSIONTOKEN
 
 const dynoDb = new DynamoDB({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    sessionToken
+    region
 })
 
 // It creates a new shortUrl if not exist

@@ -5,15 +5,9 @@ const s3 = new AWS.S3();
 
 let bucketName = process.env.AWS_BUCKET_NAME
 const region = process.env.AWS_BUCKET_REGION
-const accessKeyId = process.env.AWS_ACCESSKEY
-const secretAccessKey = process.env.AWS_SECRETKEY
-const sessionToken = process.env.AWS_SESSIONTOKEN
 
 AWS.config.update({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    sessionToken
+    region
 });
 
 // for get a signed url of s3 object

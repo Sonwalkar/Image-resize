@@ -6,15 +6,9 @@ const got = require('got');
 
 const bucketName = process.env.AWS_BUCKET_NAME;
 const region = process.env.AWS_BUCKET_REGION;
-const accessKeyId = process.env.AWS_ACCESSKEY;
-const secretAccessKey = process.env.AWS_SECRETKEY;
-const sessionToken = process.env.AWS_SESSIONTOKEN;
 
 const s3 = new S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    sessionToken,
+    region
 });
 
 // upload file to s3

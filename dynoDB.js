@@ -4,15 +4,9 @@ const Dynamodb = require('aws-sdk/clients/dynamodb')
 
 const tableName = process.env.AWS_DYNAMODB_TABLE
 const region = process.env.AWS_BUCKET_REGION
-const accessKeyId = process.env.AWS_ACCESSKEY
-const secretAccessKey = process.env.AWS_SECRETKEY
-const sessionToken = process.env.AWS_SESSIONTOKEN
 
 const dynamodb = new Dynamodb({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    sessionToken
+    region
 })
 
 // It creates a new item in dynamodb and return newItem object
