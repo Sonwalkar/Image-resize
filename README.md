@@ -10,3 +10,4 @@ AWS_BUCKET_REGION="us-east-1"
 AWS_DYNAMODB_TABLE="imageResize"
 ```
 ```Note: If you running locally then you have to add credentials `access key, secret key`.```
+.
