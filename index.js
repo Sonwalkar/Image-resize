@@ -25,7 +25,6 @@ const viewsPath = path.join(__dirname, '/views')
 app.set('views', viewsPath)
 app.set('view engine', 'ejs')
 
-
 // for getting css url from S3 Bucket
 const createSignedUrlForCss = async ()=>{
     return await getSignedUrl("style.css", "CSS")
