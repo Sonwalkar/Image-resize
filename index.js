@@ -26,9 +26,6 @@ app.set('views', viewsPath)
 app.set('view engine', 'ejs')
 
 
-// const publicPath = path.join(__dirname, '/public');
-// app.use(express.static(publicPath))
-
 // for getting css url from S3 Bucket
 const createSignedUrlForCss = async ()=>{
     return await getSignedUrl("style.css", "CSS")
