@@ -87,7 +87,6 @@ app.get('/showImage', async (req, res)=>{
     res.render('showImage',{shortUrl:signedUrl, cssFile: await createSignedUrlForCss()}) // render image
 })
 
-
 // If client send an post request then get the image
 app.post('/imagesURL',upload.single('userImage'), async (req, res)=>{
     console.log("Gotcha");
